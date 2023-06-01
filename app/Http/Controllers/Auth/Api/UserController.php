@@ -7,17 +7,22 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\ConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
     public function register(StoreUserRequest $request, User $user)
     {
+        
 
-        if(!$user = $user->create([
+       $user = $user->create([
             'name'=> $request['name'],
             'email'=> $request['email'],
             'password'=> Hash::make($request['password']),
-        ])) 
+        ]);
+
+        Mail::to($user->email)->send(new ConfirmationEmail($user));
 
         abort(500, 'Error to create a new user...');
 
