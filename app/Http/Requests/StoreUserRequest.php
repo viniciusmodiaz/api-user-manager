@@ -36,7 +36,7 @@ class StoreUserRequest extends FormRequest
                 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/'
                 ,'same:password_confirmation'
             ],
-            'password_confirmation' => 'min:8'           
+            'password_confirmation' => 'required',          
         ];
     }
 

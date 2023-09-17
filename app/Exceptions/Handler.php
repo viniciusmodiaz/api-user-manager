@@ -27,6 +27,10 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    public function report(Throwable $exception)
+    {
+        parent::report($exception);
+    }
     /**
      * Register the exception handling callbacks for the application.
      *
@@ -37,5 +41,10 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        return parent::render($request, $exception);
     }
 }

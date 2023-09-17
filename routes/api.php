@@ -2,10 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\Api\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\Api\LoginController;
-use App\Http\Controllers\Auth\Api\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +31,7 @@ Route::prefix('auth')->group(function() {
     Route::post('logout', 
         [LoginController::class, 'logout']);
     Route::post('register', 
-        [RegisterController::class, 'register']);
+        [UserController::class, 'register']);
 });
 
 Route::post('/tokens/create', function (Request $request) {
@@ -42,21 +41,7 @@ Route::post('/tokens/create', function (Request $request) {
 });
 
 Route::prefix('email')->group(function() {
-    // Route::get('/verify', function () {
-    //     return view('auth.verify-email');
-    // })->middleware('auth')->name('verification.notice');
-    
-    Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-     
-        return redirect('/home');
-    })->middleware(['auth', 'signed'])->name('verification.verify');
-    
-    Route::post('/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-     
-        return back()->with('message', 'Verification link sent!');
-    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+    Route::get('/confirmation/{token}', [UserController::class, 'confirm'])->name('confirmation');
 });
 
 Route::get('/orders', function () {
