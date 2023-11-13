@@ -22,10 +22,10 @@ class Repository
         return $this->model->where($params)->first();
     }
 
-    public function updateExist(Model $user, array $params): Model
+    public function updateExist(Model $model, array $params): Model
     {
-        $user->fill($params)->save();
-        return $user;
+        $model->fill($params)->save();
+        return $model;
     }
 
 }

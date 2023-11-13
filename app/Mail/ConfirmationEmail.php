@@ -31,6 +31,6 @@ class ConfirmationEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('view.emails.confirmation')->subject('Confirmação de Cadastro')->with(['user' => $this->user]);
+        return $this->view('emails.confirmation')->subject('Confirmação de Cadastro')->with(['user' => $this->user]);
     }
 }

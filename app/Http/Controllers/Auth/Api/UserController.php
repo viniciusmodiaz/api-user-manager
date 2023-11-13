@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
@@ -53,23 +53,6 @@ class UserController extends Controller
         }
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if(!auth()->attempt($credentials)) 
-            abort(401, 'Invalid Credentials');
-            
-        $token = auth()->user()->createToken('auth_token');
-
-        return response()
-                        ->json([
-                            'data' => [
-                                'token' => $token->plainTextToken,
-                            ]
-                        ]);
-    }
-
     public function confirm($token, UserRepository $userRepository){
 
         try {
@@ -79,7 +62,7 @@ class UserController extends Controller
             if (!$user) {
                 return response()->json([
                     'data' => [
-                        'message' => 'Link inválido, por favor solicitar novamente o link de confirmação.',
+                        'message' => 'Link inválido.',
                     ]
                 ], 400);
             }
@@ -99,6 +82,23 @@ class UserController extends Controller
                 ]
             ], $exception->getCode());
         }
+    }
+
+    function changePassword(ChangePasswordRequest $request, UserRepository $userRepository){
+        try {
+
+            DB::beginTransaction();
+
+            $userRepository->updateExist();
+            
+        } catch (Exception $exception) {
+            return response()->json([
+                'data' => [
+                    'message' => $exception->getMessage(),
+                ]
+            ], $exception->getCode());
+        }
+
     }
     
 }
